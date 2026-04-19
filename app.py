@@ -48,23 +48,4 @@ with tab2:
             x.fillStyle="red"; x.fillRect(a.x*g,a.y*g,g-2,g-2);
         }
         document.onkeydown=function(e){
-            if(e.keyCode==37&&v.x==0){v={x:-1,y:0}} if(e.keyCode==38&&v.y==0){v={x:0,y:-1}}
-            if(e.keyCode==39&&v.x==0){v={x:1,y:0}} if(e.keyCode==40&&v.y==0){v={x:0,y:1}}
-        }; setInterval(draw,100);
-        </script>
-        """
-        st.components.v1.html(snake_html, height=450)
-
-    elif oyun_secimi == "XOX (Tic-Tac-Toe)":
-        xox_html = """
-        <style>
-            .grid { display: grid; grid-template-columns: repeat(3, 100px); gap: 5px; justify-content: center; margin-top: 20px; }
-            .cell { width: 100px; height: 100px; background: #333; color: white; display: flex; align-items: center; justify-content: center; font-size: 2em; cursor: pointer; border-radius: 8px; font-family: sans-serif; }
-            .cell:hover { background: #444; }
-        </style>
-        <div class="grid" id="board"></div>
-        <h2 id="status" style="text-align:center; color: #4CAF50;">Sıra: X</h2>
-        <button onclick="reset()" style="display:block; margin: 20px auto; padding:10px 20px;">Yeniden Başlat</button>
-        <script>
-            let board = ["","","","","","","","",""]; let turn = "X";
-            const b =
+            if(e.keyCode==37&&v.x==0){v={x:-1,y:0}} if(e.
