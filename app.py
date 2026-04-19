@@ -1,95 +1,70 @@
 import streamlit as st
 import urllib.parse
 
-# Sayfa Yapılandırması
+# Sayfa Ayarları
 st.set_page_config(page_title="MODEREN Halı Yıkama", layout="wide")
 
-st.title("🧺 MODEREN Mühendislik - Halı Yıkama Operasyon Üssü")
+st.title("🧺 MODEREN Operasyon & Oyun Üssü")
 
-# Sekme Yapısı
-tab1, tab2 = st.tabs(["🚀 Operasyon & WhatsApp", "🎮 Mola (Oyun)"])
+# Sekmeler
+tab1, tab2 = st.tabs(["🚀 WhatsApp Operasyon", "🎮 Oyun Salonu"])
 
 with tab1:
-    st.subheader("Müşteri Durum Paneli")
-    
+    st.subheader("Müşteri Durumu ve Bildirim")
     col1, col2 = st.columns(2)
     with col1:
-        # Görseldeki gibi 'mustafa usta' örneği üzerinden
-        musteri_adi = st.text_input("Müşteri Adı", value="mustafa usta")
-        # Telefonun başına 90 eklemeyi unutma
-        telefon = st.text_input("Telefon (90 ile başla)", value="90")
-    
+        musteri = st.text_input("Müşteri Adı", value="Mustafa Usta")
+        tel = st.text_input("Telefon (90...)", value="90")
     with col2:
-        durum = st.selectbox("Durum Güncelle", 
-                            ["Sipariş Alındı", "Yıkama Aşamasında", "Kurumada", "Teslimata Hazır", "Teslim Edildi"])
-
-    # WhatsApp Mesajını Hazırlama
-    mesaj = f"Merhaba {musteri_adi}, MODEREN Halı Yıkama'dan yazıyoruz. Siparişinizin güncel durumu: *{durum}*."
-    encoded_mesaj = urllib.parse.quote(mesaj)
-    # Web uyumlu WhatsApp linki
-    wp_link = f"https://wa.me/{telefon}?text={encoded_mesaj}"
-
-    if st.button("Veriyi Güncelle ve Mesajı Hazırla"):
-        # Burada işlem başarı mesajı gösteriyoruz
-        st.success(f"{musteri_adi} için kayıt '{durum}' olarak güncellendi.")
-        # Link butonu tarayıcıda yeni sekme açtığı için hata vermez
-        st.link_button("WhatsApp'ı Aç ve Gönder 💬", wp_link)
+        durum = st.selectbox("İşlem Durumu", ["Sipariş Alındı", "Yıkama Başladı", "Kurutma", "Teslimata Hazır", "Teslim Edildi"])
+    
+    mesaj = f"Merhaba {musteri}, halınızın durumu: *{durum}*. MODEREN Mühendislik & Halı Yıkama."
+    link = f"https://wa.me/{tel}?text={urllib.parse.quote(mesaj)}"
+    
+    if st.button("Sistemi Güncelle"):
+        st.success(f"{musteri} için durum güncellendi!")
+        st.link_button("WhatsApp'tan Bildir 💬", link)
 
 with tab2:
-    st.subheader("Kısa Bir Mola")
-    st.write("Yön tuşları ile yılanı kontrol et!")
-    
-    # HTML/JavaScript tabanlı yılan oyunu
-    snake_game = """
-    <div style="display: flex; justify-content: center;">
-        <canvas id="snake" width="400" height="400" style="border:5px solid #4CAF50; background:#000;"></canvas>
-    </div>
-    <script>
-    var canvas = document.getElementById('snake');
-    var context = canvas.getContext('2d');
-    var grid = 16; var count = 0;
-    var snake = { x: 160, y: 160, dx: grid, dy: 0, cells: [], maxCells: 4 };
-    var apple = { x: 320, y: 320 };
-    function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
-    function loop() {
-      requestAnimationFrame(loop);
-      if (++count < 6) { return; }
-      count = 0;
-      context.clearRect(0,0,canvas.width,canvas.height);
-      snake.x += snake.dx; snake.y += snake.dy;
-      if (snake.x < 0) { snake.x = canvas.width - grid; }
-      else if (snake.x >= canvas.width) { snake.x = 0; }
-      if (snake.y < 0) { snake.y = canvas.height - grid; }
-      else if (snake.y >= canvas.height) { snake.y = 0; }
-      snake.cells.unshift({x: snake.x, y: snake.y});
-      if (snake.cells.length > snake.maxCells) { snake.cells.pop(); }
-      context.fillStyle = 'red';
-      context.fillRect(apple.x, apple.y, grid-1, grid-1);
-      context.fillStyle = 'lime';
-      snake.cells.forEach(function(cell, index) {
-        context.fillRect(cell.x, cell.y, grid-1, grid-1);
-        if (cell.x === apple.x && cell.y === apple.y) {
-          snake.maxCells++;
-          apple.x = getRandomInt(0, 25) * grid;
-          apple.y = getRandomInt(0, 25) * grid;
+    st.subheader("Mola Zamanı: İstediğin Oyunu Seç")
+    oyun_secimi = st.selectbox("Bir Oyun Seç", ["Yılan Oyunu", "XOX (Tic-Tac-Toe)", "Ping Pong"])
+
+    if oyun_secimi == "Yılan Oyunu":
+        snake_html = """
+        <canvas id="s" width="400" height="400" style="border:3px solid #4CAF50; background:#000; display:block; margin:auto;"></canvas>
+        <script>
+        var c=document.getElementById("s"),x=c.getContext("2d"),g=20,p={x:10,y:10},a={x:15,y:15},v={x:0,y:0},t=[],l=5;
+        function draw(){
+            p.x+=v.x; p.y+=v.y;
+            if(p.x<0)p.x=19; if(p.x>19)p.x=0; if(p.y<0)p.y=19; if(p.y>19)p.y=0;
+            x.fillStyle="black"; x.fillRect(0,0,c.width,c.height);
+            x.fillStyle="lime";
+            for(var i=0;i<t.length;i++){
+                x.fillRect(t[i].x*g,t[i].y*g,g-2,g-2);
+                if(t[i].x==p.x&&t[i].y==p.y)l=5;
+            }
+            t.push({x:p.x,y:p.y}); while(t.length>l)t.shift();
+            if(a.x==p.x&&a.y==p.y){l++; a.x=Math.floor(Math.random()*20); a.y=Math.floor(Math.random()*20);}
+            x.fillStyle="red"; x.fillRect(a.x*g,a.y*g,g-2,g-2);
         }
-        for (var i = index + 1; i < snake.cells.length; i++) {
-          if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-            snake.x = 160; snake.y = 160; snake.cells = []; snake.maxCells = 4;
-            snake.dx = grid; snake.dy = 0;
-            apple.x = getRandomInt(0, 25) * grid;
-            apple.y = getRandomInt(0, 25) * grid;
-          }
-        }
-      });
-    }
-    document.addEventListener('keydown', function(e) {
-      if (e.which === 37 && snake.dx === 0) { snake.dx = -grid; snake.dy = 0; }
-      else if (e.which === 38 && snake.dy === 0) { snake.dy = -grid; snake.dx = 0; }
-      else if (e.which === 39 && snake.dx === 0) { snake.dx = grid; snake.dy = 0; }
-      else if (e.which === 40 && snake.dy === 0) { snake.dy = grid; snake.dx = 0; }
-    });
-    requestAnimationFrame(loop);
-    </script>
-    """
-    st.components.v1.html(snake_game, height=450)
+        document.onkeydown=function(e){
+            if(e.keyCode==37&&v.x==0){v={x:-1,y:0}} if(e.keyCode==38&&v.y==0){v={x:0,y:-1}}
+            if(e.keyCode==39&&v.x==0){v={x:1,y:0}} if(e.keyCode==40&&v.y==0){v={x:0,y:1}}
+        }; setInterval(draw,100);
+        </script>
+        """
+        st.components.v1.html(snake_html, height=450)
+
+    elif oyun_secimi == "XOX (Tic-Tac-Toe)":
+        xox_html = """
+        <style>
+            .grid { display: grid; grid-template-columns: repeat(3, 100px); gap: 5px; justify-content: center; margin-top: 20px; }
+            .cell { width: 100px; height: 100px; background: #333; color: white; display: flex; align-items: center; justify-content: center; font-size: 2em; cursor: pointer; border-radius: 8px; font-family: sans-serif; }
+            .cell:hover { background: #444; }
+        </style>
+        <div class="grid" id="board"></div>
+        <h2 id="status" style="text-align:center; color: #4CAF50;">Sıra: X</h2>
+        <button onclick="reset()" style="display:block; margin: 20px auto; padding:10px 20px;">Yeniden Başlat</button>
+        <script>
+            let board = ["","","","","","","","",""]; let turn = "X";
+            const b =
